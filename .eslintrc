@@ -1,0 +1,9 @@
+{
+  "extends": "@react-native-community",
+
+  "rules": {
+    "quotes": [2, "double", { "avoidEscape": true }]
+  }
+}
+
+// ?\ESLint is a tool for identifying and reporting on patterns found in ECMAScript/JavaScript code, with the goal of making code more consistent and avoiding bugs.

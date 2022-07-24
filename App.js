@@ -1,20 +1,78 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar as ExpoStatusBar } from "expo-status-bar";
+import * as firebase from "firebase";
+import "react-native-gesture-handler";
+import React, { useEffect, useState } from "react";
+import { ThemeProvider } from "styled-components/native";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import {
+  useFonts as useOswald,
+  Oswald_400Regular,
+} from "@expo-google-fonts/oswald";
+import { useFonts as useLato, Lato_400Regular } from "@expo-google-fonts/lato";
+
+import { theme } from "./src/infrastructure/theme";
+import { Navigation } from "./src/infrastructure/navigation";
+
+import { RestaurantsContextProvider } from "./src/services/restaurants/restaurants.context";
+import { LocationContextProvider } from "./src/services/location/location.context";
+import { FavoritesContextProvider } from "./src/services/favorites/favorites.context";
+
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyD1XtULcayFbQoeZnGeHXLj35cPa5KG05o",
+  authDomain: "larynx-34970.firebaseapp.com",
+  projectId: "larynx-34970",
+  storageBucket: "larynx-34970.appspot.com",
+  messagingSenderId: "79764449959",
+  appId: "1:79764449959:web:45d4f44d760fc49daf0982",
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    firebase
+      .auth()
+      .signInWithEmailAndPassword("cj@cj.com", "test123")
+      .then((user) => {
+        console.log(user);
+        setIsAuthenticated(true);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+  const [oswaldLoaded] = useOswald({
+    Oswald_400Regular,
+  });
+
+  const [latoLoaded] = useLato({
+    Lato_400Regular,
+  });
+
+  if (!oswaldLoaded || !latoLoaded) {
+    return null;
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }
+  return (
+    <>
+      <ThemeProvider theme={theme}>
+        <FavoritesContextProvider>
+          <LocationContextProvider>
+            <RestaurantsContextProvider>
+              <Navigation />
+            </RestaurantsContextProvider>
+          </LocationContextProvider>
+        </FavoritesContextProvider>
+      </ThemeProvider>
+      <ExpoStatusBar style="auto" />
+    </>
+  );
+}

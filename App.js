@@ -27,25 +27,7 @@ const firebaseConfig = {
   appId: "1:79764449959:web:45d4f44d760fc49daf0982",
 };
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
-
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword("cj@cj.com", "test123")
-      .then((user) => {
-        console.log(user);
-        setIsAuthenticated(true);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }, []);
   const [oswaldLoaded] = useOswald({
     Oswald_400Regular,
   });
@@ -58,9 +40,6 @@ export default function App() {
     return null;
   }
 
-  if (!isAuthenticated) {
-    return null;
-  }
   return (
     <>
       <ThemeProvider theme={theme}>

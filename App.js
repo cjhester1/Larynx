@@ -13,9 +13,7 @@ import { useFonts as useLato, Lato_400Regular } from "@expo-google-fonts/lato";
 import { theme } from "./src/infrastructure/theme";
 import { Navigation } from "./src/infrastructure/navigation";
 
-import { RestaurantsContextProvider } from "./src/services/restaurants/restaurants.context";
-import { LocationContextProvider } from "./src/services/location/location.context";
-import { FavoritesContextProvider } from "./src/services/favorites/favorites.context";
+import { AuthenticationContextProvider } from "./src/services/authentication/authentication.context";
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -27,6 +25,9 @@ const firebaseConfig = {
   appId: "1:79764449959:web:45d4f44d760fc49daf0982",
 };
 
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 export default function App() {
   const [oswaldLoaded] = useOswald({
     Oswald_400Regular,
@@ -43,13 +44,18 @@ export default function App() {
   return (
     <>
       <ThemeProvider theme={theme}>
-        <FavoritesContextProvider>
-          <LocationContextProvider>
-            <RestaurantsContextProvider>
-              <Navigation />
-            </RestaurantsContextProvider>
-          </LocationContextProvider>
-        </FavoritesContextProvider>
+        <AuthenticationContextProvider>
+          {/* <FavoritesContextProvider>
+            <LocationContextProvider>
+              <RestaurantsContextProvider> 
+              Favorites are being loaded at app level at this point this is why favorites
+              arent being changed with different levels, favorites need to be loaded at app navigator level
+              */}
+          <Navigation />
+          {/* </RestaurantsContextProvider>
+            </LocationContextProvider>
+          </FavoritesContextProvider> */}
+        </AuthenticationContextProvider>
       </ThemeProvider>
       <ExpoStatusBar style="auto" />
     </>
